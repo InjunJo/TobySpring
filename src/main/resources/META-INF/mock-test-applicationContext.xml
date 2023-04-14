@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <beans>
+        <bean id="userDao" class="user.dao.MockUserDao"/>
+
+        <bean id="userMapper" class="user.mapper.UserMapper"/>
+        <bean id="userService" class="user.service.UserServiceTx">
+            <property name="userService" ref="userServiceImpl"/>
+            <property name="transactionManager" ref="transactionManager"/>
+        </bean>
+        <bean id="basicUserLevelUpgrade" class="user.policy.BasicUserLevelUpgrade"/>
+
+        <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+            <property name="username" value="root"/>
+            <property name="password" value="0347793"/>
+            <property name="driverClass" value="org.mariadb.jdbc.Driver"/>
+            <property name="url" value="jdbc:mariadb://localhost:3307/testdb"/>
+        </bean>
+
+        <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>
+
+
+
+        <bean id="userServiceImpl" class="user.service.UserServiceImpl">
+            <property name="userDao" ref="userDao"/>
+            <property name="policy" ref="basicUserLevelUpgrade"/>
+        </bean>
+
+        <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>
+
+
+    </beans>
+
+</beans>

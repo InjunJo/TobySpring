@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <beans>
+        <!--Service hierarchy Start-->
+        <!--userService start-->
+
+        <!--<bean id="userService" class="org.springframework.aop.framework.ProxyFactoryBean">
+            <property name="target" ref="userServiceImpl"/>
+            <property name="interceptorNames">
+                <list>
+                    <value>transactionAdvisor</value>
+                </list>
+            </property>
+
+        </bean>-->
+
+        <!--<bean id="userServiceImpl" class="user.service.UserServiceImpl">
+            <property name="userDao" ref="userDao"/>
+            <property name="policy" ref="basicUserLevelUpgrade"/>
+        </bean>-->
+
+        <bean id="basicUserLevelUpgrade" class="user.policy.BasicUserLevelUpgrade"/>
+
+        <!--userService End-->
+
+        <!--todoService Start-->
+
+        <!--todoService End-->
+
+        <!--Service hierarchy End-->
+
+        <!--DataAccess hierarchy Start -->
+        <!--DAO Start -->
+        <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>
+
+        <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+            <property name="username" value="root"/>
+            <property name="password" value="0347793"/>
+            <property name="driverClass" value="org.mariadb.jdbc.Driver"/>
+            <property name="url" value="jdbc:mariadb://localhost:3307/spring"/>
+        </bean>
+
+        <!--user-->
+        <!--<&lt;!&ndash;bean id="userDao" class="user.dao.UserDaoJdbc">
+            <property name="dataSource" ref="dataSource"/>
+            <property name="jdbcTemplate" ref="jdbcTemplate"/>
+            <property name="userMapper" ref="userMapper"/>
+        </bean>&ndash;&gt;-->
+        <bean id="userMapper" class="user.mapper.UserMapper"/>
+
+        <!--todo start-->
+        <bean id="todoMapper" class="user.mapper.TodoMapper"/>
+
+        <!--<bean id="todoDAO" class="user.dao.TodoDAO">
+            <property name="dataSource" ref="dataSource"/>
+            <property name="jdbcTemplate" ref="jdbcTemplate"/>
+            <property name="rowMapper" ref="todoMapper"/>
+        </bean>-->
+        <!--todo end-->
+        <!--DAO end-->
+
+        <!--Transaction start-->
+        <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>
+
+        <bean id="transactionAdvice" class="user.transaction.TransactionAdvice">
+            <property name="transactionManager" ref="transactionManager"/>
+        </bean>
+        <bean id="transactionPointcut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+            <property name="mappedName" value="upgrade*"/>
+        </bean>
+        <bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+            <property name="advice" ref="transactionAdvice"/>
+            <property name="pointcut" ref="transactionPointcut"/>
+        </bean>
+
+        <!--Transaction end-->
+        <!--DataAccess hierarchy End -->
+
+    </beans>
+
+</beans>

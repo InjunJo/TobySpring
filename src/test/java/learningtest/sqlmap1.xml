@@ -1,0 +1,8 @@
+<sql:sqlmap xmlns:sql="http://www.epril.com/sqlmap">
+  <!--1 or more repetitions:-->
+  <sql:sql key="string">string</sql:sql>
+  <sql:sql key="add">insert</sql:sql>
+  <sql:sql key="get">select</sql:sql>
+  <sql:sql key="delete">delete</sql:sql>
+
+</sql:sqlmap>
